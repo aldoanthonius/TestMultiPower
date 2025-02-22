@@ -3,6 +3,7 @@
 @section('content')
 <div class="container">
     <h2>Laporan Efisiensi Bahan Bakar</h2>
+
     <form action="{{ route('fuel.efficiency.update') }}" method="POST" class="mb-4">
         @csrf
         <div class="row">
@@ -25,6 +26,7 @@
             </div>
         </div>
     </form>
+
     <form method="GET" action="{{ url('/fuel-efficiency') }}" class="mb-4">
         <div class="d-flex gap-2">
             <input type="text" name="search" placeholder="Cari kendaraan..." value="{{ request('search') }}"
@@ -33,6 +35,7 @@
             <a href="{{ url('/fuel-efficiency') }}" class="btn btn-secondary">Reset</a>
         </div>
     </form>
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -48,7 +51,7 @@
                     <td>{{ $vehicle->name }}</td>
                     <td>{{ $vehicle->distance_traveled ?? '-' }}</td>
                     <td>{{ $vehicle->fuel_used ?? '-' }}</td>
-                    <td>
+                    <td class="efficiency" data-value="{{ $vehicle->fuel_used > 0 ? $vehicle->distance_traveled / $vehicle->fuel_used : 0 }}">
                         @if ($vehicle->fuel_used > 0)
                             {{ number_format($vehicle->distance_traveled / $vehicle->fuel_used, 2) }} km/l
                         @else
@@ -63,5 +66,18 @@
     <a href="{{ url('/dashboard') }}" class="btn btn-primary mt-3">Kembali ke Dashboard</a>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const efficiencyCells = document.querySelectorAll(".efficiency");
+
+        efficiencyCells.forEach(cell => {
+            const value = parseFloat(cell.getAttribute("data-value"));
+            if (value > 0 && value < 5) {
+                cell.style.color = "red";
+                cell.style.fontWeight = "bold";
+            }
+        });
+    });
+</script>
 
 @endsection

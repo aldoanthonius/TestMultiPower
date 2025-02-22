@@ -38,6 +38,8 @@ class VehicleController extends Controller {
                 $query->orderBy('status', 'asc');
             } elseif ($request->sort_by == 'last_maintenance') {
                 $query->orderBy('last_maintenance', 'desc');
+            } else if($request->sort_by == 'is_in_use'){
+                $query->orderBy('is_in_use', 'desc');
             }
         }
 

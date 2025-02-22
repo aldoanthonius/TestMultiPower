@@ -30,6 +30,7 @@
                 <option value="last_maintenance" {{ request('sort_by') == 'last_maintenance' ? 'selected' : '' }}>
                     Berdasarkan Tanggal Servis
                 </option>
+                <option value="is_in_use" {{ request('sort_by') == 'is_in_use' ? 'selected' : '' }}>Berdasarkan Ketersediaan</option>
             </select>
 
             <button type="submit" class="btn btn-primary">Cari</button>
@@ -59,8 +60,24 @@
                         <form action="{{ url('/dashboard/'.$vehicle->id.'/delete') }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Hapus</button>
+                            <button type="button" class="btn btn-danger delete-btn">Hapus</button>
                         </form>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                document.querySelectorAll(".delete-btn").forEach(button => {
+                                    button.removeEventListener("click", handleDelete); // Pastikan event lama dihapus
+                                    button.addEventListener("click", handleDelete);
+                                });
+
+                                function handleDelete(event) {
+                                    event.stopPropagation(); // Mencegah event bubbling
+
+                                    if (confirm("Apakah Anda yakin ingin menghapus kendaraan ini?")) {
+                                        this.closest("form").submit();
+                                    }
+                                }
+                            });
+                        </script>
                     </td>
                 </tr>
             @endforeach
